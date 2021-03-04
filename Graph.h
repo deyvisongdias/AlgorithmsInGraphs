@@ -49,7 +49,7 @@ class Graph{
         Graph* getVertexInduced(int* listIdNodes);
         Graph* agmKuskal();
         Graph* agmPrim();
-        float floydMarshall(int idSource, int idTarget);
+        float* floydMarshall(int idSource, int idTarget);
         float dijkstra(int idSource, int idTarget);
 
         //methods phase1
