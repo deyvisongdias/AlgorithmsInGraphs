@@ -47,15 +47,15 @@ class Graph{
         void topologicalSorting();
         void breadthFirstSearch(ofstream& output_file);
         Graph* getVertexInduced(int* listIdNodes);
-        Graph* agmKuskal();
-        Graph* agmPrim();
+        Graph* agmKuskal(ofstream& output);
+        Graph* agmPrim(ofstream &output_file, int id);
         float* floydMarshall(int idSource, int idTarget);
         float dijkstra(int idSource, int idTarget);
 
         //methods phase1
-        float greed();
+        void greed(ofstream& output_file);
+        float auxGreed(ofstream& output_file);
         float greedRandom();
-        float greedRactiveRandom();
     private:
         //Auxiliar methods
 
