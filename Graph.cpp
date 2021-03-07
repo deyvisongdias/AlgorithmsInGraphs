@@ -51,7 +51,6 @@ Graph::~Graph()
 // Getters
 int Graph::getOrder()
 {
-
     return this->order;
 }
 int Graph::getNumberEdges()
@@ -62,7 +61,6 @@ int Graph::getNumberEdges()
 //Function that verifies if the graph is directed
 bool Graph::getDirected()
 {
-
     return this->directed;
 }
 //Function that verifies if the graph is weighted at the edges
@@ -404,54 +402,52 @@ Graph* Graph::getVertexInduced(int listIdNodes[])
 void Graph::prim(ofstream &output_file, int id)
 {
     priority_queue < pair<float, Node* >, vector<pair<float, Node* >>, greater<pair<float,Node*  > > > data_edges; ///Fila de prioridade que ordena os nós de acordo com a distancia em relacao ao anterior
-    vector <float> distances(order,INFINITE); ///Vetor de distancias
-    vector <int> predecessor(order,-1);   ///Vetor antecessores
-    bool visited[order]= {};     ///Vetor de visitados
-    Node *p=getNode(id); ///Obtem o no que sera a raiz da arvore
-    data_edges.push(make_pair(0,p)); ///Adiciona o nó inicial na fila e marca sua distancia como zero
-    distances[p->getId()]=0;///Distancia para o nó inicial é marcada como zero
+    vector <float> distances(order,INFINITE);
+    vector <int> predecessor(order,-1);
+    bool visited[order]= {};
+    Node *p=getNode(id);
+    data_edges.push(make_pair(0,p));
+    distances[p->getId()]=0;
 
-    while(!data_edges.empty()) ///Enquanto a fila nao estiver vazia
+    while(!data_edges.empty())
     {
-        Node *d = data_edges.top().second; ///Pega o nó do topo da fila
-        data_edges.pop();  ///Remove o topo da fila
-        visited[d->getId()]=true; /// Marca o nó como visitado
-        for(Edge * q= d->getFirstEdge() ; q!=nullptr ; q=q->getNextEdge())///Percorre a lista de arestas
+        Node *d = data_edges.top().second;
+        data_edges.pop();
+        visited[d->getId()]=true;
+        for(Edge * q= d->getFirstEdge() ; q!=nullptr ; q=q->getNextEdge())
         {
             if(!visited[q->getTargetId()] &&  q->getWeight() < distances[q->getTargetId()]) ///Se o no alvo nao foi visitado && o peso atual é menor que o peso antigo
             {
-                distances[q->getTargetId()]=q->getWeight(); ///Atualiza a distancia/peso
+                distances[q->getTargetId()]=q->getWeight();
                 data_edges.push(make_pair(q->getWeight(),getNode(q->getTargetId()))); ///Insere na fila o proximo nó e a distancia ate ele
-                predecessor[q->getTargetId()] = d->getId(); ///Atualiza o antecessor do nó
+                predecessor[q->getTargetId()] = d->getId();
             }
         }
     }
-    float total_cost=0;///Somario dos pesos das arestas
+    float total_cost=0;
     cout<<"Arestas:\n";
     output_file <<"Arestas:\n";
     for (int i = 0; i < order; ++i)
     {
         if(i!=id)
         {
-            cout<<predecessor[i]<<" - "<< i <<endl;///Mostra a aresta de i para j
-            output_file<<predecessor[i]<<" - "<< i <<endl;///Grava a aresta de i para j
-            total_cost+=distances[i];///Incrementa o custo
-        }
+            cout<<predecessor[i]<<" - "<< i <<endl;
+            output_file<<predecessor[i]<<" - "<< i <<endl;
+            total_cost+=distances[i];
 
     }
     cout<<"Custo da AGM: "<<total_cost<<endl;
     output_file <<"Custo da AGM: "<<total_cost<<endl;
 }
 
-void Graph::kruskal(ofstream& output) ///algoritmo gerador de arvore minima: kruskal, recebe o arquivo de saida para gerar a saida
+void Graph::kruskal(ofstream& output)
 {
-    list<Edge*> arestas; ///cria uma lista que armazenara todas as arestas do grafo
-    vector<Edge*> tree; ///cria um vetor de arestas que armazenará a solução
-    Node *p;
+    list<Edge*> arestas;
+    vector<Edge*> tree;
     Edge *q;
     Edge *qaux;
     float soma=0; ///variavel que armazenara o somatorio das arestas da solução
-    for(p=this->getFirstNode(); p!=nullptr; p=p->getNextNode()) ///percorre a lista de nós do grafo
+    for(p=this->getFirstNode(); p!=nullptr; p=p->getNextNode()
     {
         for(q=p->getFirstEdge(); q!=nullptr; q=q->getNextEdge()) ///percorre a lista de arestas do grafo
         {
@@ -473,32 +469,32 @@ void Graph::kruskal(ofstream& output) ///algoritmo gerador de arvore minima: kru
     }); ///organiza as arestas por ordem crescente atravez de comparação
     int *subset = new int[this->order]; ///cria vetor com tamanho da ordem do grafo,atravez dele sera possivel
     ///verificar se as arestas a serem inseridas formam ciclos com as ja dispostas na solução
-    for(int i=0; i<this->order; i++) ///inicializa o vetor subset com -1
+    for(int i=0; i<this->order; i++)
     {
         subset[i]=-1;
     }
-    for(int i=0; i<this->getNumberEdges(); i++) ///usa um contador para executar a tarefa para cada numero de arestas do grafo
+    for(int i=0; i<this->getNumberEdges(); i++)
     {
-        int aux_v1=search_edge(arestas.front(),arestas.front()->getTargetId()); ///pega o id do nó de "origem" da aresta de menor peso da lista (front)
-        int aux_v2=arestas.front()->getTargetId(); ///armazena o id do nó "alvo" da aresta de menor peso da lista (front)
-        int v1=buscar(subset,aux_v1);  ///armazena o indice para o subconjunto ao qual o id v1 pertence
-        int v2=buscar(subset,aux_v2); ///armazena o indice para o subconjunto ao qual o id v2 pertence
-        if(v1!=v2)                   ///se os subconjuntos forem diferentes ele os une
+        int aux_v1=search_edge(arestas.front(),arestas.front()->getTargetId());
+        int aux_v2=arestas.front()->getTargetId();
+        int v1=buscar(subset,aux_v1);
+        int v2=buscar(subset,aux_v2);
+        if(v1!=v2)
         {
-            cout << aux_v1  << " - " << aux_v2 <<" " <<  arestas.front()->getWeight()  << endl;    ///imprime conexões dos vertices
-            output << aux_v1  << " - " << aux_v2 <<" " <<  arestas.front()->getWeight()  << endl; ///grava no arquivo de saida as conexões de vertice
-            soma=soma+arestas.front()->getWeight(); ///soma dos pesos das arestas
-            tree.push_back(arestas.front()); ///armazena as arestas em uma arvore
+            cout << aux_v1  << " - " << aux_v2 <<" " <<  arestas.front()->getWeight()  << endl;
+            output << aux_v1  << " - " << aux_v2 <<" " <<  arestas.front()->getWeight()  << endl;
+            soma=soma+arestas.front()->getWeight();
+            tree.push_back(arestas.front());
             unir(subset,v1,v2);
         }
         arestas.pop_front();
     }
-    cout << soma << endl; ///imrpime a soma dos pesos das arestas da arvore
+    cout << soma << endl;
     output  << soma << endl;
 }
 
 
-*/
+
 //greed algoritms
 
 void Graph::greed(ofstream& output_file)
@@ -512,16 +508,16 @@ void Graph::greed(ofstream& output_file)
     long long nanoseconds =chrono::duration_cast<chrono::nanoseconds>(end).count();
     cout << nanoseconds*pow(10,-6) << endl;
     output_file <<"Tempo(ms): "<< nanoseconds*pow(10,-6) << endl;
-    // output_file << "Qualidade da Solucao( Maior grau ) : "<<s.size() <<endl;
 
 
 }
 
+Graph* Graph::aux
+
+
 
 float Graph::greedRandom()
 {
-
-
 
 
 
